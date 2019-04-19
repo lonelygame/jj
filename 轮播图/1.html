@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+
+			nav {
+				width: 850px;
+				height: 500px;
+				margin: 50px auto;
+				overflow: hidden;
+				position: relative;
+			}
+
+			#index {
+				position: absolute;
+				right: 10%;
+				bottom: 10px;
+				z-index: 6
+			}
+
+			#index li {
+				width: 20px;
+				height: 20px;
+				background: #fff;
+				margin-left: 10px;
+				float: left;
+				line-height: 20px;
+				text-align: center;
+				cursor: pointer;
+			}
+
+			nav #index li.ac {
+				background: red;
+
+			}
+
+			#img {
+				width: 4250px;
+				height: 450px;
+				position: absolute;
+				z-index: -1;
+			}
+
+			#img li {
+				width: 850px;
+				height: 450px;
+				float: left;
+			}
+		</style>
+	</head>
+	<body>
+
+		<nav>
+			<ul id="index">
+				<li class="ac">1</li>
+				<li>2</li>
+				<li>3</li>
+				<li>4</li>
+				<li>5</li>
+			</ul>
+			<ul id="img">
+				<li><a href="javascript:alert(0);"><img src="1.jpg" alt=""></a></li>
+				<li><a href="javascript:alert(1);"><img src="2.jpg" alt=""></a></li>
+				<li><a href="javascript:alert(2);"><img src="3.jpg" alt=""></a></li>
+				<li><a href="javascript:alert(3);"><img src="4.jpg" alt=""></a></li>
+				<li><a href="javascript:alert(4;"><img src="5.jpg" alt=""></a></li>
+			</ul>
+		</nav>
+		<script>
+			function moveElement(ele, x_final, y_final, interval) {
+				var x_pos = ele.offsetLeft;
+				var y_pos = ele.offsetTop;
+				var dist = 0;
+				if (ele.movement) {
+					clearTimeout(ele.movement);
+				}
+				if (x_pos == x_final && y_pos == y_final) {
+					return;
+				}
+				dist = Math.ceil(Math.abs(x_final - x_pos) / 10);
+				x_pos = x_pos < x_final ? x_pos + dist : x_pos - dist;
+
+				dist = Math.ceil(Math.abs(y_final - y_pos) / 10);
+				y_pos = y_pos < y_final ? y_pos + dist : y_pos - dist;
+
+				ele.style.left = x_pos + 'px';
+				ele.style.top = y_pos + 'px';
+
+				ele.movement = setTimeout(function() {
+					moveElement(ele, x_final, y_final, interval);
+				}, interval)
+			}
+
+			function moveIndex(list, num) {
+				for (var i = 0; i < list.length; i++) {
+					if (list[i].className == 'ac') {
+						list[i].className = '';
+					}
+				}
+				list[num].className = 'ac';
+			}
+			var img = document.getElementById('img');
+			var list = document.getElementById('index').getElementsByTagName('li');
+			var index = 0;
+
+			var nextMove = function() {
+				index += 1;
+				if (index >= list.length) {
+					index = 0;
+				}
+				moveIndex(list, index);
+				moveElement(img, -850 * index, 0, 20);
+			};
+			var play = function() {
+				timer = setInterval(function() {
+					nextMove();
+				}, 2500);
+			};
+			for (var i = 0; i < list.length; i++) {
+				list[i].index = i;
+				list[i].onmouseover = function() {
+					var clickIndex = parseInt(this.index);
+					moveElement(img, -850 * index, 0, 20);
+					index = clickIndex;
+					moveIndex(list, index);
+					clearInterval(timer);
+				};
+				list[i].onmouseout = function() {
+					play();
+				};
+			}
+		</script>
+	</body>
+</html>
